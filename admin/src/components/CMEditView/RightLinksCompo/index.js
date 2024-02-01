@@ -131,7 +131,7 @@ const RightLinksCompo = () => {
         .create({ model, prompt, temperature, maxTokens })
         .then((data) => {
           console.log(data);
-          setCompletion(data?.choices[0]?.text.trim());
+          setCompletion(data?.choices[0]?.message.content.trim());
           setFinishReason(data?.choices[0]?.finish_reason);
           setGenerateCompletionText('Generate');
         });

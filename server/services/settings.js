@@ -17,6 +17,7 @@ module.exports = ({ strapi }) => {
       temperature: 1,
       maxTokens: 16,
       models: [
+        'gpt-3.5-turbo-1106',
         'babbage',
         'ada',
         'davinci',

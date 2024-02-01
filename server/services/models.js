@@ -5,7 +5,9 @@ const fetch = require('node-fetch');
 module.exports = ({ strapi }) => {
   const getModels = async () => {
     try {
-      const models = await fetch(`https://api.openai.com/v1/models`, {
+      const models = await fetch(`${strapi
+        .plugin('open-ai')
+        .config('API_HOST')}/v1/models`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
