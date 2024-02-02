@@ -45,6 +45,8 @@ const RightLinksCompo = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   const [prompt, setPrompt] = useState(undefined);
+  const [picturePrompt, setPicturePrompt] = useState(undefined);
+  const [picture, setPicture] = useState(undefined);
   const [completion, setCompletion] = useState(undefined);
   const [finishReason, setFinishReason] = useState(null);
 
@@ -68,6 +70,12 @@ const RightLinksCompo = () => {
     formatMessage({
       id: getTrad('Modal.tabs.prompt.generate.button.text.default'),
       defaultMessage: 'Generate',
+    })
+  );
+  const [generatePictureText, setGeneratePictureText] = useState(
+    formatMessage({
+      id: getTrad('Modal.tabs.prompt.generate.button.text.default'),
+      defaultMessage: 'Генерировать изображение',
     })
   );
   const [defaultSettings, setDefaultSettings] = useState(null);
@@ -138,7 +146,26 @@ const RightLinksCompo = () => {
     }
   };
 
+  const handlePicturePromptSubmit = () => {
+    if (model && prompt && temperature && maxTokens) {
+      setGenerateCompletionText('Generating completion...');
+      completionAPI
+        .create({ model, prompt, temperature, maxTokens })
+        .then((data) => {
+          console.log(data);
+          setCompletion(data?.choices[0]?.message.content.trim());
+          setFinishReason(data?.choices[0]?.finish_reason);
+          setGenerateCompletionText('Generate');
+        });
+    }
+  };
+
   const handleCopyToClipboard = () => {
+    setIsVisible((prev) => !prev);
+    navigator.clipboard.writeText(completion);
+  };
+
+  const handleCopyToMedia = () => {
     setIsVisible((prev) => !prev);
     navigator.clipboard.writeText(completion);
   };
@@ -291,14 +318,14 @@ const RightLinksCompo = () => {
                         >
                           <TextInput
                             placeholder={formatMessage({
-                              id: getTrad('Modal.tabs.prompt.placeholder'),
+                              id: getTrad('Modal.tabs.picturePrompt.placeholder'),
                               defaultMessage:
-                                'Explain what is Strapi to a 5 years old',
+                                'Нарисуй шапку для сайта, который занимается продажей мяса в розницу и оптом',
                             })}
-                            label="Prompt"
-                            name="content"
-                            onChange={(e) => setPrompt(e.target.value)}
-                            value={prompt}
+                            label="Текст для генерации"
+                            name="picture_prompt"
+                            onChange={(e) => setPicturePrompt(e.target.value)}
+                            value={picturePrompt}
                           />
                         </Box>
                         <Box
@@ -309,9 +336,9 @@ const RightLinksCompo = () => {
                         >
                           <Button
                             paddingTop={4}
-                            onClick={() => handlePromptSubmit()}
+                            onClick={() => handlePicturePromptSubmit()}
                           >
-                            {generateCompletionText}
+                            {generatePictureText}
                           </Button>
                         </Box>
 
@@ -322,23 +349,8 @@ const RightLinksCompo = () => {
                           paddingLeft={4}
                           background="neutral0"
                         >
-                          <Textarea
-                            label="Completion"
-                            hint={
-                              finishReason && completion
-                                ? `${formatMessage({
-                                    id: getTrad(
-                                      'Modal.tabs.prompt.finish-reason.text'
-                                    ),
-                                    defaultMessage: 'Finish reason:',
-                                  })} ${finishReason}`
-                                : undefined
-                            }
-                            onChange={(e) => setCompletion(e.target.value)}
-                            name="content"
-                          >
-                            {completion}
-                          </Textarea>
+                          <img src={picture}
+                          />
                         </Box>
                       </TabPanel>
                       <TabPanel>
@@ -499,6 +511,18 @@ const RightLinksCompo = () => {
                         {formatMessage({
                           id: getTrad('Modal.copy-to-clipboard.button.text'),
                           defaultMessage: 'Copy to clipboard',
+                        })}
+                      </Button>
+                    )}
+
+                    {picture && (
+                      <Button
+                        startIcon={<Duplicate />}
+                        onClick={() => handleCopyToMedia()}
+                      >
+                        {formatMessage({
+                          id: getTrad('Modal.copy-to-media.button.text'),
+                          defaultMessage: 'Copy to media',
                         })}
                       </Button>
                     )}

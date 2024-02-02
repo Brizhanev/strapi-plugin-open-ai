@@ -16,5 +16,7 @@
   "Modal.save-model.button.text.after": "Saved!",
   "Modal.clear.button.text": "Clear completion",
   "Modal.copy-to-clipboard.button.text": "Copy to clipboard",
-  "Modal.tabs.prompt.placeholder": "Explain what is Strapi to a 5 years old"
+  "Modal.copy-to-media.button.text": "Copy to media",
+  "Modal.tabs.prompt.placeholder": "Explain what is Strapi to a 5 years old",
+  "Modal.tabs.picturePrompt.placeholder": "Нарисуй шапку для сайта, который занимается продажей мяса в розницу и оптом"
 }

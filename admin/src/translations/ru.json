@@ -16,5 +16,7 @@
     "Modal.save-model.button.text.after": "Сохранено!",
     "Modal.clear.button.text": "Очистить завершение",
     "Modal.copy-to-clipboard.button.text": "Скопировать в буфер обмена",
-    "Modal.tabs.prompt.placeholder": "Объясните, что такое Strapi пятилетнему ребенку"
+    "Modal.copy-to-media.button.text": "Скопировать в галерею",
+    "Modal.tabs.prompt.placeholder": "Объясните, что такое Strapi пятилетнему ребенку",
+    "Modal.tabs.picturePrompt.placeholder": "Нарисуй шапку для сайта, который занимается продажей мяса в розницу и оптом"
 }
