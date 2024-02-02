@@ -22,7 +22,24 @@ module.exports = ({ strapi }) => {
     return ctx.throw(400, 'Either the prompt, temperature, model or maxToken parameter is missing');
   };
 
+  const createPicture = async (ctx) => {
+    const { picturePrompt } = ctx.request.body;
+
+    if (picturePrompt) {
+      try {
+        return completionService.createPicture({
+            picturePrompt
+        });
+      } catch (err) {
+        console.log(err);
+        ctx.throw(500, err);
+      }
+    }
+    return ctx.throw(400, 'Either the prompt, temperature, model or maxToken parameter is missing');
+  };
+
   return {
     createCompletion,
+    createPicture
   };
 };

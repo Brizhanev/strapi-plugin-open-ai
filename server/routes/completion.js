@@ -8,5 +8,11 @@ module.exports = {
       handler: 'completions.createCompletion',
       config: { policies: [] },
     },
+    {
+        method: 'POST',
+        path: '/picture',
+        handler: 'completions.createPicture',
+        config: { policies: [] },
+      },
   ],
 };

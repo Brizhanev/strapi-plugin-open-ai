@@ -147,8 +147,8 @@ const RightLinksCompo = () => {
   };
 
   const handlePicturePromptSubmit = () => {
-    if (model && prompt && temperature && maxTokens) {
-      setGenerateCompletionText('Generating completion...');
+    if (picturePrompt) {
+      setGeneratePictureText('Идет генерация....');
       completionAPI
         .create({ model, prompt, temperature, maxTokens })
         .then((data) => {

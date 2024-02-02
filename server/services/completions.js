@@ -26,7 +26,46 @@ module.exports = ({ strapi }) => {
     }
   };
 
+  const createPicture = async ({ picturePrompt }) => {
+    let data = {
+        'model_id': 1,
+        'params': {
+            "type": "GENERATE",
+            "numImages": 1,
+            "width": 250,
+            "height": 250,
+            "generateParams": {
+                "query": picturePrompt
+            }
+        }
+    };
+    try {
+      const response = await fetch(`${strapi
+        .plugin('open-ai')
+        .config('FUSION_API_HOST')}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Key': `Key ${strapi
+            .plugin('open-ai')
+            .config('FUSION_API_KEY')}`,
+          'X-Secret': `Secret ${strapi
+            .plugin('open-ai')
+            .config('FUSION_API_SECRET')}`,
+        },
+        body: JSON.stringify(data),
+      });
+      console.dir(response);
+      const res = await response.json();
+      console.dir(res);
+      return res;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return {
     createCompletion,
+    createPicture
   };
 };

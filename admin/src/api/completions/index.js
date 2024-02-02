@@ -8,5 +8,12 @@ const completions = {
     });
     return data;
   },
+  picture: async ({ picturePrompt }) => {
+    const data = await request(`/open-ai/picture`, {
+      method: 'POST',
+      body: { picturePrompt },
+    });
+    return data;
+  },
 };
 export default completions;
