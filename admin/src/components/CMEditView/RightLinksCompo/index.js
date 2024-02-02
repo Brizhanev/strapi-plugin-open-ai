@@ -211,12 +211,77 @@ const RightLinksCompo = () => {
                       </Tab>
                       <Tab>
                         {formatMessage({
+                          id: getTrad('Modal.tabs.picture'),
+                          defaultMessage: 'Picture',
+                        })}
+                      </Tab>
+                      <Tab>
+                        {formatMessage({
                           id: getTrad('Modal.tabs.settings'),
                           defaultMessage: 'Settings',
                         })}
                       </Tab>
                     </Tabs>
                     <TabPanels>
+                      <TabPanel>
+                        <Box
+                          color="neutral800"
+                          paddingTop={8}
+                          paddingLeft={4}
+                          background="neutral0"
+                        >
+                          <TextInput
+                            placeholder={formatMessage({
+                              id: getTrad('Modal.tabs.prompt.placeholder'),
+                              defaultMessage:
+                                'Explain what is Strapi to a 5 years old',
+                            })}
+                            label="Prompt"
+                            name="content"
+                            onChange={(e) => setPrompt(e.target.value)}
+                            value={prompt}
+                          />
+                        </Box>
+                        <Box
+                          color="neutral800"
+                          paddingTop={3}
+                          paddingLeft={4}
+                          background="neutral0"
+                        >
+                          <Button
+                            paddingTop={4}
+                            onClick={() => handlePromptSubmit()}
+                          >
+                            {generateCompletionText}
+                          </Button>
+                        </Box>
+
+                        <Box
+                          color="neutral800"
+                          paddingTop={4}
+                          paddingBottom={8}
+                          paddingLeft={4}
+                          background="neutral0"
+                        >
+                          <Textarea
+                            label="Completion"
+                            hint={
+                              finishReason && completion
+                                ? `${formatMessage({
+                                    id: getTrad(
+                                      'Modal.tabs.prompt.finish-reason.text'
+                                    ),
+                                    defaultMessage: 'Finish reason:',
+                                  })} ${finishReason}`
+                                : undefined
+                            }
+                            onChange={(e) => setCompletion(e.target.value)}
+                            name="content"
+                          >
+                            {completion}
+                          </Textarea>
+                        </Box>
+                      </TabPanel>
                       <TabPanel>
                         <Box
                           color="neutral800"

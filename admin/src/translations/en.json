@@ -3,6 +3,7 @@
   "RightLinks.button": "Completion",
   "Modal.tabs.prompt": "Prompt",
   "Modal.tabs.settings": "Settings",
+  "Modal.tabs.picture": "Picture",
   "Modal.tabs.prompt.generate.button.text.default": "Generate",
   "Modal.tabs.prompt.generate.button.text.pending": "Generating...",
   "Modal.tabs.settings.download.button.text.default": "Download models",

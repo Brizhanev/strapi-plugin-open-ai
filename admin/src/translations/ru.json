@@ -1,0 +1,20 @@
+{
+    "Plugin.name": "AI генератор контента",
+    "RightLinks.button": "Завершение",
+    "Modal.tabs.prompt": "Текстовый контент",
+    "Modal.tabs.picture": "Графический контент",
+    "Modal.tabs.settings": "Настройки",
+    "Modal.tabs.prompt.generate.button.text.default": "Генерировать",
+    "Modal.tabs.prompt.generate.button.text.pending": "Генерация...",
+    "Modal.tabs.settings.download.button.text.default": "Загрузить модели",
+    "Modal.tabs.settings.download.button.text.pending": "Загрузка...",
+    "Modal.tabs.prompt.finish-reason.text": "Причина завершения:",
+    "Modal.tabs.settings.temperature.hint.text": "Между 0 и 1 (по умолчанию). Более высокие значения означают, что модель будет рисковать больше. Попробуйте 0.9 для более креативных приложений и 0 для тех, у которых есть четко определенный ответ.",
+    "Modal.tabs.settings.maxTokens.hint.text": "Количество токенов вашей подсказки плюс max_tokens не должно превышать длину контекста модели. Большинство моделей имеют длину контекста 2048 токенов (за исключением новейших моделей, которые поддерживают 4096).",
+    "Modal.cancel.button.text": "Отменить",
+    "Modal.save-model.button.text.default": "Сохранить настройки модели",
+    "Modal.save-model.button.text.after": "Сохранено!",
+    "Modal.clear.button.text": "Очистить завершение",
+    "Modal.copy-to-clipboard.button.text": "Скопировать в буфер обмена",
+    "Modal.tabs.prompt.placeholder": "Объясните, что такое Strapi пятилетнему ребенку"
+}
