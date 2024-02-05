@@ -1,6 +1,6 @@
 {
     "Plugin.name": "AI генератор контента",
-    "RightLinks.button": "Завершение",
+    "RightLinks.button": "Запустить",
     "Modal.tabs.prompt": "Текстовый контент",
     "Modal.tabs.picture": "Графический контент",
     "Modal.tabs.settings": "Настройки",

@@ -11,6 +11,8 @@ import { Select, Option } from '@strapi/design-system';
 import { Divider } from '@strapi/design-system/Divider';
 import { Typography } from '@strapi/design-system/Typography';
 import { NumberInput } from '@strapi/design-system';
+import { useFetchClient } from '@strapi/helper-plugin';
+
 
 import { Grid, GridItem } from '@strapi/design-system';
 import {
@@ -36,6 +38,9 @@ import Duplicate from '@strapi/icons/Duplicate';
 const modelsAPI = require('../../../api/models').default;
 const settingsAPI = require('../../../api/settings').default;
 const completionAPI = require('../../../api/completions').default;
+const Buffer = require('buffer/').Buffer;
+var FormData = require('form-data');
+
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -46,12 +51,16 @@ const RightLinksCompo = () => {
 
   const [prompt, setPrompt] = useState(undefined);
   const [picturePrompt, setPicturePrompt] = useState(undefined);
+  const [pictureBase64, setPictureBase64] = useState(undefined);
   const [picture, setPicture] = useState(undefined);
   const [completion, setCompletion] = useState(undefined);
   const [finishReason, setFinishReason] = useState(null);
 
   const [model, setModel] = useState();
+  const [pictureModel, setPictureModel] = useState();
   const [temperature, setTemperature] = useState();
+  const [width, setWidth] = useState();
+  const [height, setHeight] = useState();
   const [maxTokens, setMaxTokens] = useState();
 
   const [saveModelText, setSaveModelText] = useState(
@@ -61,6 +70,12 @@ const RightLinksCompo = () => {
     })
   );
   const [downloadedModelsText, setDownloadedModelsText] = useState(
+    formatMessage({
+      id: getTrad('Modal.tabs.settings.download.button.text.default'),
+      defaultMessage: 'Download models',
+    })
+  );
+  const [downloadedPictureModelsText, setDownloadedPictureModelsText] = useState(
     formatMessage({
       id: getTrad('Modal.tabs.settings.download.button.text.default'),
       defaultMessage: 'Download models',
@@ -80,12 +95,15 @@ const RightLinksCompo = () => {
   );
   const [defaultSettings, setDefaultSettings] = useState(null);
 
+  const { post } = useFetchClient();
+
   useEffect(() => {
     const fetchDefaultSettings = async () => {
       const tmpSettings = await settingsAPI.get();
       setDefaultSettings(tmpSettings);
 
       setModel(tmpSettings?.model);
+      setPictureModel(tmpSettings?.pictureModel);
       setTemperature(tmpSettings?.temperature);
       setMaxTokens(tmpSettings?.maxTokens);
     };
@@ -94,7 +112,7 @@ const RightLinksCompo = () => {
 
   const handleSaveDefaultSettings = () => {
     settingsAPI
-      .set({ model, temperature, maxTokens, models: defaultSettings.models })
+      .set({ model, pictureModel, temperature, maxTokens, models: defaultSettings.models, pictureModels: defaultSettings.pictureModels })
       .then(async () => {
         setSaveModelText(
           formatMessage({
@@ -132,16 +150,36 @@ const RightLinksCompo = () => {
     });
   };
 
+  const handleDownloadPictureModels = () => {
+    setDownloadedPictureModelsText(
+      formatMessage({
+        id: getTrad('Modal.tabs.settings.download.button.text.pending'),
+        defaultMessage: 'Downloading...',
+      })
+    );
+    modelsAPI.getPicture().then((data) => {
+      setDefaultSettings({ ...defaultSettings, pictureModels: data });
+      settingsAPI.set({ ...defaultSettings, pictureModels: data }).then(async () => {
+        setDownloadedPictureModelsText(
+          formatMessage({
+            id: getTrad('Modal.tabs.settings.download.button.text.default'),
+            defaultMessage: 'Download models',
+          })
+        );
+      });
+    });
+  };
+
   const handlePromptSubmit = () => {
     if (model && prompt && temperature && maxTokens) {
-      setGenerateCompletionText('Generating completion...');
+      setGenerateCompletionText('Идет генерация....');
       completionAPI
         .create({ model, prompt, temperature, maxTokens })
         .then((data) => {
           console.log(data);
           setCompletion(data?.choices[0]?.message.content.trim());
           setFinishReason(data?.choices[0]?.finish_reason);
-          setGenerateCompletionText('Generate');
+          setGenerateCompletionText('Генерировать');
         });
     }
   };
@@ -150,12 +188,14 @@ const RightLinksCompo = () => {
     if (picturePrompt) {
       setGeneratePictureText('Идет генерация....');
       completionAPI
-        .create({ model, prompt, temperature, maxTokens })
+        .picture({ picturePrompt, width, height })
         .then((data) => {
           console.log(data);
-          setCompletion(data?.choices[0]?.message.content.trim());
-          setFinishReason(data?.choices[0]?.finish_reason);
-          setGenerateCompletionText('Generate');
+          setPictureBase64(data.images[0]);
+          setPicture('data:image/jpeg;base64,' + data.images[0]);
+          //setCompletion(data?.choices[0]?.message.content.trim());
+          //setFinishReason(data?.choices[0]?.finish_reason);
+          setGeneratePictureText('Генерировать');
         });
     }
   };
@@ -165,9 +205,19 @@ const RightLinksCompo = () => {
     navigator.clipboard.writeText(completion);
   };
 
-  const handleCopyToMedia = () => {
-    setIsVisible((prev) => !prev);
-    navigator.clipboard.writeText(completion);
+  const handleCopyToMedia = async () => {
+    const buffer = Buffer.from(pictureBase64, 'base64');
+    const formData = new FormData();
+    const blob = new Blob([ buffer ], { type: 'image/jpeg' });
+    const endpoint = '/upload';
+    formData.append('files', blob, 'image.jpg');
+
+    const data = await post(endpoint, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return data;
   };
 
   return (
@@ -263,7 +313,7 @@ const RightLinksCompo = () => {
                               defaultMessage:
                                 'Explain what is Strapi to a 5 years old',
                             })}
-                            label="Prompt"
+                            label="Подсказка"
                             name="content"
                             onChange={(e) => setPrompt(e.target.value)}
                             value={prompt}
@@ -291,7 +341,7 @@ const RightLinksCompo = () => {
                           background="neutral0"
                         >
                           <Textarea
-                            label="Completion"
+                            label="Сгенерированный контент"
                             hint={
                               finishReason && completion
                                 ? `${formatMessage({
@@ -322,11 +372,56 @@ const RightLinksCompo = () => {
                               defaultMessage:
                                 'Нарисуй шапку для сайта, который занимается продажей мяса в розницу и оптом',
                             })}
-                            label="Текст для генерации"
+                            label="Подсказка"
                             name="picture_prompt"
                             onChange={(e) => setPicturePrompt(e.target.value)}
                             value={picturePrompt}
                           />
+                        </Box>
+                        <Box
+                          color="neutral800"
+                          paddingTop={8}
+                          paddingLeft={4}
+                          background="neutral0"
+                        >
+                          <Grid
+                            gap={{
+                              desktop: 5,
+                              tablet: 2,
+                              mobile: 1,
+                            }}
+                          >
+                            <GridItem col={6} s={12}>
+                              <Box>
+                              <NumberInput
+                                  label="Ширина изображения"
+                                  name="width"
+                                  onValueChange={(value) =>
+                                    setWidth(
+                                      value >= 0 && value <= 1024 ? value : 1024
+                                    )
+                                  }
+                                  step="64"
+                                  value={width}
+                                />
+                              </Box>
+                            </GridItem>
+                            <GridItem col={4} s={12}>
+                              <Box>
+                              <NumberInput
+                                  label="Высота изображения"
+                                  name="height"
+                                  onValueChange={(value) =>
+                                    setHeight(
+                                      value >= 0 && value <= 1024 ? value : 1024
+                                    )
+                                  }
+                                  step="64"
+                                  value={height}
+                                />
+                              </Box>
+                            </GridItem>
+                          </Grid>
                         </Box>
                         <Box
                           color="neutral800"
@@ -371,8 +466,7 @@ const RightLinksCompo = () => {
                               <Box>
                                 <Select
                                   id="select1"
-                                  label="Models"
-                                  hint="https://beta.openai.com/docs/models/overview"
+                                  label="Текстовая модель"
                                   value={model}
                                   onChange={setModel}
                                   selectButtonTitle="Carret Down Button"
@@ -415,7 +509,7 @@ const RightLinksCompo = () => {
                             <GridItem padding={1} col={6} s={12}>
                               <Box color="neutral800">
                                 <NumberInput
-                                  label="Temperature"
+                                  label="Температура"
                                   name="content"
                                   hint={formatMessage({
                                     id: getTrad(
@@ -436,7 +530,7 @@ const RightLinksCompo = () => {
                             <GridItem padding={1} col={6} s={12}>
                               <Box color="neutral800">
                                 <NumberInput
-                                  label="Max tokens"
+                                  label="Количество токенов на 1 запрос"
                                   name="content"
                                   hint={formatMessage({
                                     id: getTrad(
@@ -452,6 +546,49 @@ const RightLinksCompo = () => {
                                   }
                                   value={maxTokens}
                                 />
+                              </Box>
+                            </GridItem>
+                          </Grid>
+                        </Box>
+                        <Box
+                          color="neutral800"
+                          paddingTop={8}
+                          paddingLeft={4}
+                          background="neutral0"
+                        >
+                          <Grid
+                            gap={{
+                              desktop: 5,
+                              tablet: 2,
+                              mobile: 1,
+                            }}
+                          >
+                            <GridItem col={6} s={12}>
+                              <Box>
+                                <Select
+                                  id="select1"
+                                  label="Графическая модель"
+                                  value={pictureModel}
+                                  onChange={setPictureModel}
+                                  selectButtonTitle="Carret Down Button"
+                                >
+                                  {defaultSettings &&
+                                    defaultSettings?.pictureModels?.map((model) => (
+                                      <Option value={model}>{model}</Option>
+                                    ))}
+                                </Select>
+                              </Box>
+                            </GridItem>
+                            <GridItem col={4} s={12}>
+                              <Box paddingTop={5}>
+                                <Button
+                                  variant="primary"
+                                  size="S"
+                                  startIcon={<Download />}
+                                  onClick={() => handleDownloadPictureModels()}
+                                >
+                                  {downloadedModelsText}
+                                </Button>
                               </Box>
                             </GridItem>
                           </Grid>

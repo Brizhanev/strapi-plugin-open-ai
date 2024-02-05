@@ -29,7 +29,11 @@ module.exports = ({ env }) => ({
   'open-ai': {
     enabled: true,
     config: {
-      API_TOKEN: '<your-open-ai-token>',
+      API_HOST: 'https://api.proxyapi.ru/openai',
+      API_TOKEN: '',
+      FUSION_API_HOST: 'https://api-key.fusionbrain.ai/key/api/v1',
+      FUSION_API_KEY: '',
+      FUSION_API_SECRET: '',
     },
   },
   // ...

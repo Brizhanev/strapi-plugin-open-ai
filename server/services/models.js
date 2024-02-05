@@ -31,7 +31,37 @@ module.exports = ({ strapi }) => {
     }
   };
 
+  const getPictureModels = async () => {
+    try {
+      const models = await fetch(`${strapi
+        .plugin('open-ai')
+        .config('FUSION_API_HOST')}/models`, {
+        method: 'GET',
+        headers: {
+          //'Content-Type': 'application/json',
+          'X-Key': `Key ${strapi
+            .plugin('open-ai')
+            .config('FUSION_API_KEY')}`,
+          'X-Secret': `Secret ${strapi
+            .plugin('open-ai')
+            .config('FUSION_API_SECRET')}`,
+        },
+      });
+      const res = await models.json();
+      return res?.map((model) => model.id);
+    } catch (error) {
+      console.log(error, 'returning default models');
+      return strapi
+        .store({
+          environment: '',
+          type: 'plugin',
+          name: 'open-ai',
+        })
+        .get({ key: 'settings' }).pictureModels;
+    }
+  };
+
   return {
-    getModels,
+    getModels, getPictureModels,
   };
 };

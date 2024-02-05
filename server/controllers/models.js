@@ -11,7 +11,15 @@ module.exports = ({ strapi }) => {
     }
   };
 
+  const getPictureModels = async (ctx) => {
+    try {
+      return modelService.getPictureModels();
+    } catch (err) {
+      ctx.throw(500, err);
+    }
+  };
+
   return {
-    getModels,
+    getModels, getPictureModels,
   };
 };

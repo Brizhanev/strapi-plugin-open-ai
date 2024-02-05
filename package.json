@@ -1,29 +1,29 @@
 {
-  "name": "@strapi/plugin-open-ai",
+  "name": "@brizhanev/strapi-plugin-open-ai",
   "version": "1.0.2",
-  "description": "The official plugin that allows you to create Open AI completion from a prompt",
+  "description": "The unofficial plugin that allows you to create Open AI completion from a prompt",
   "strapi": {
-    "name": "open-ai",
-    "description": "The official plugin that allows you to create Open AI completion from a prompt",
+    "name": "ai-generator",
+    "description": "The unofficial plugin that allows you to create Open AI completion from a prompt",
     "kind": "plugin",
-    "displayName": "Open AI"
+    "displayName": "AI content generator"
   },
-  "author": "Strapi Solutions SAS <hi@strapi.io> (https://strapi.io)",
+  "author": "Brizhanev Oleg <mr.brizhanev@yandex.ru> <https://brizhanev.ru",
   "maintainers": [
-    "Strapi Solutions SAS <hi@strapi.io> (https://strapi.io)"
+    "Brizhanev Oleg <mr.brizhanev@yandex.ru> <https://brizhanev.ru"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/strapi/strapi-plugin-open-ai.git"
+    "url": "git+https://github.com/Brizhanev/strapi-plugin-open-ai.git"
   },
   "peerDependencies": {
     "@strapi/strapi": "^4.0.0"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/strapi/strapi-plugin-open-ai/issues"
+    "url": "https://github.com/Brizhanev/strapi-plugin-open-ai/issues"
   },
-  "homepage": "https://github.com/strapi/strapi-plugin-open-ai#readme",
+  "homepage": "https://github.com/Brizhanev/strapi-plugin-open-ai#readme",
   "main": "strapi-admin.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -8,10 +8,10 @@ const completions = {
     });
     return data;
   },
-  picture: async ({ picturePrompt }) => {
+  picture: async ({ picturePrompt, width, height }) => {
     const data = await request(`/open-ai/picture`, {
       method: 'POST',
-      body: { picturePrompt },
+      body: { picturePrompt, width, height },
     });
     return data;
   },

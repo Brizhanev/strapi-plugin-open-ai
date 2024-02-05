@@ -14,6 +14,7 @@ module.exports = ({ strapi }) => {
     const pluginStore = getPluginStore();
     const value = {
       model: '',
+      pictureModel: '',
       temperature: 1,
       maxTokens: 16,
       models: [
@@ -85,6 +86,9 @@ module.exports = ({ strapi }) => {
         'text-curie:001',
         'text-babbage:001',
       ],
+      pictureModels: [
+        1
+      ]
     };
     await pluginStore.set({ key: 'settings', value });
     return pluginStore.get({ key: 'settings' });

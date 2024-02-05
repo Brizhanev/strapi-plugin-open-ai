@@ -23,12 +23,14 @@ module.exports = ({ strapi }) => {
   };
 
   const createPicture = async (ctx) => {
-    const { picturePrompt } = ctx.request.body;
+    const { picturePrompt, width, height } = ctx.request.body;
 
     if (picturePrompt) {
       try {
         return completionService.createPicture({
-            picturePrompt
+            picturePrompt,
+            width,
+            height
         });
       } catch (err) {
         console.log(err);

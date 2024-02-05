@@ -7,5 +7,11 @@ const models = {
     });
     return data;
   },
+  getPicture: async () => {
+    const data = await request(`/open-ai/pictureModels`, {
+      method: 'GET',
+    });
+    return data;
+  },
 };
 export default models;
